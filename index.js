@@ -1,5 +1,6 @@
 const config = require('./config.json')
 const DiscordClient = require("./client/DiscordClient.js");
+const { writeLog } = require('./client/helper.js');
 
 // const axios = require("axios");
 // const stream = require('stream');
@@ -37,8 +38,8 @@ const DiscordClient = require("./client/DiscordClient.js");
 const client = new DiscordClient(config.client.token, config.telegrambot.chat_ids);
 client.login();
   
-console.log(`Server running and Services running`)
-console.log(`Discord Services up and running`);
+writeLog(`Server running and Services running`)
+writeLog(`Discord Services up and running`);
 
 // async function urlToBuffer(url) {
 //     try {

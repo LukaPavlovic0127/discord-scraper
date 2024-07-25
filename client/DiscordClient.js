@@ -1,6 +1,7 @@
 const config = require('../config.json')
 const Discord = require('discord.js');
 const { BroadcastTGMessages } = require('./bot');
+const { writeLog } = require('./helper');
 
 class DiscordClient {
   constructor() {
@@ -12,20 +13,20 @@ class DiscordClient {
     this.discordClient.on('message', this.handleMessage);
 
     this.discordClient.on("error", function (error) {
-      console.error(`Client's WebSocket encountered a connection error: ${error.message}`);
+      writeLog(`Client's WebSocket encountered a connection error: ${error.message}`);
       BroadcastTGMessages(`Client's WebSocket encountered a connection error: ${error.message}`)
     });
 
     this.discordClient.on("reconnecting", function () {
-      console.log(`Client tries to reconnect to the WebSocket`);
+      writeLog(`Client tries to reconnect to the WebSocket`);
     });
 
     this.discordClient.on("resume", function (replayed) {
-      console.log(`Client a WebSocket resumes, ${replayed} replays`);
+      writeLog(`Client a WebSocket resumes, ${replayed} replays`);
     });
 
     this.discordClient.on("warn", function (info) {
-      console.log(`Client warn: ${info}`);
+      writeLog(`Client warn: ${info}`);
     });
   }
 
@@ -41,11 +42,11 @@ class DiscordClient {
 
       const users = config.client.users;
 
-      // console.log("Guild name: " + msg.guild.name);
-      console.log("Author ID: " + msg.author.id);
-      // console.log("Author Name: " + msg.author.username);
-      // console.log("Channel name: " + msg.channel.name);
-      console.log("Msg Content: " + msg.content);
+      // writeLog("Guild name: " + msg.guild.name);
+      writeLog("\nAuthor ID: " + msg.author.id);
+      // writeLog("Author Name: " + msg.author.username);
+      // writeLog("Channel name: " + msg.channel.name);
+      writeLog("Msg Content: " + msg.content);
 
       if (!users.includes(msg.author.id)) {
         return;
@@ -64,11 +65,13 @@ class DiscordClient {
       if (msg.content.length > 0) {
         BroadcastTGMessages(`*💦 Server Name*: ${msg.guild.name}
 *💠 Channel Name*: ${msg.channel.name}
-*👁 Author ID*: \`${msg.author.id}\`
 *🧔 Author Name*: \`${msg.author.username}\`
-*💌 Content*: ${msg.content}
+*👁 Author ID*: \`${msg.author.id}\`
 
-*📫 URL*: ${msg.url}
+*💌 Content 💌*
+${(!!msg.content) ? msg.content : "No Content ⛔"}
+
+*📫 URL*: [Click here](${msg.url})
 *📌 Attachments*: ${attachments.length > 0 ? "\nThere are attachments in this message, check discord" : "⛔ None"}
 `)
       }
@@ -80,14 +83,14 @@ class DiscordClient {
   login() {
     this.discordClient.login(this.token)
       .then(() => {
-        console.log(`Client - Logged in as ${this.discordClient.user.tag}`);
+        writeLog(`Client - Logged in as ${this.discordClient.user.tag}`);
       })
       .catch((error) => {
-        console.log("Failed to login client ("
+        writeLog("Failed to login client ("
           + this.token + "): ", error.message);
         this.chat_ids.forEach(chatId => {
           // this.bot.telegram.sendMessage(chatId, "Failed to login client: " + error.message)
-          //     .then(() => console.log('Message sent successfully'))
+          //     .then(() => writeLog('Message sent successfully'))
           //     .catch((error) => console.error('Error:', error)); 
         });
       });

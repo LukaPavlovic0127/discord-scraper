@@ -1,0 +1,19 @@
+{
+  "name": "discordforwardbot",
+  "version": "1.0.0",
+  "description": "Bot that will forward client message to discord server using discord bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Selmir",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "discord.js": "github:AS-Development/DiscordJSClient",
+    "node-telegram-bot-api": "^0.66.0",
+    "nodemon": "^3.1.4",
+    "telegraf": "^4.15.3"
+  }
+}

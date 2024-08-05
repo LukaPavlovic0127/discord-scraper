@@ -14,7 +14,7 @@ class DiscordClient {
 
     this.discordClient.on("error", function (error) {
       writeLog(`Client's WebSocket encountered a connection error: ${error.message}`);
-      BroadcastTGMessages(`Client's WebSocket encountered a connection error: ${error.message}`)
+      BroadcastTGMessages(`Client's WebSocket encountered a connection error: ${error.message}`, true)
     });
 
     this.discordClient.on("reconnecting", function () {
@@ -41,17 +41,23 @@ class DiscordClient {
       }
 
       const users = config.client.users;
-
-      // writeLog("Guild name: " + msg.guild.name);
-      writeLog("\nAuthor ID: " + msg.author.id);
-      // writeLog("Author Name: " + msg.author.username);
-      // writeLog("Channel name: " + msg.channel.name);
-      writeLog("Msg Content: " + msg.content);
-
+      const filters = config.client.userfilters;
+      
       if (!users.includes(msg.author.id)) {
         return;
       }
 
+      // writeLog("Guild name: " + msg.guild.name);
+      writeLog("\nAuthor ID: " + msg.author.id);
+      // writeLog("Author Name: " + msg.author.username);
+      writeLog("Channel id: " + msg.channel.id);
+      writeLog("Channel Name: " + msg.channel.name);
+      writeLog("Msg Content: " + msg.content);
+      
+      if (filters[msg.author.id] && !filters[msg.author.id].includes(msg.channel.id)) {
+        return
+      }
+      
       let attachments = new Array();
 
       if (msg.attachments instanceof Discord.Collection) {
@@ -76,7 +82,7 @@ ${(!!msg.content) ? msg.content : "No Content ⛔"}
 `)
       }
     } catch (err) {
-      console.error(err)
+      writeLog("Error: " + err)
     }
   }
 

@@ -9,8 +9,15 @@ TG_BOT.on('message', (msg) => {
   writeLog(msg.chat.id)
 })
 
-const BroadcastTGMessages = async (message) => {
+const BroadcastTGMessages = async (message, dev = false) => {
   try {
+    if(dev === true) {
+      TG_BOT.sendMessage(CHAT_IDS[0], message, {
+        parse_mode: "Markdown",
+        disable_web_page_preview: true
+      })
+      return
+    }
     CHAT_IDS.map(chatId => {
       TG_BOT.sendMessage(chatId, message, {
         parse_mode: "Markdown",
@@ -18,7 +25,7 @@ const BroadcastTGMessages = async (message) => {
       })
     })
   } catch (err) {
-    console.error(err)
+    writeLog("Error: " + err)
   }
 }
 
